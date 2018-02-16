@@ -33,14 +33,13 @@ const fetchYesterdayPrice = new Promise((resolve, reject) => {
 
 server.get('/compare', (req, res) => {
   Promise.all([fetchYesterdayPrice, fetchCurrentPrice]).then(_ => {
-    const message =
+    const diff =
       capture.current > capture.previous ? 'has risen by' : 'has fallen by';
     res
       .status(status.OK)
       .send(
-        `BPI ${message} $${Math.round(
-          (capture.current - capture.previous) * 100,
-        ) / 100} USD since yesterday.`,
+        `BPI ${diff} $${Math.round((capture.current - capture.previous) * 100) /
+          100} USD since yesterday.`,
       );
   });
 });
