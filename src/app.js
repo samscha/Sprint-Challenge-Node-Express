@@ -38,8 +38,8 @@ server.get('/compare', (req, res) => {
       capture.current > capture.previous ? 'has risen by' : 'has fallen by';
 
     const message = `BPI ${diff} $${Math.abs(
-      Math.round((capture.current - capture.previous) * 100),
-    ) / 100} USD since yesterday.`;
+      capture.current - capture.previous,
+    )} USD since yesterday.`;
 
     history.push(message);
 
