@@ -38,8 +38,9 @@ server.get('/compare', (req, res) => {
     res
       .status(status.OK)
       .send(
-        `BPI ${diff} $${Math.round((capture.current - capture.previous) * 100) /
-          100} USD since yesterday.`,
+        `BPI ${diff} $${Math.abs(
+          Math.round((capture.current - capture.previous) * 100),
+        ) / 100} USD since yesterday.`,
       );
   });
 });
