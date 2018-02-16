@@ -26,7 +26,17 @@ const fetchData = (URL, res) => {
           ? (capture.current = data.bpi.USD.rate_float)
           : (capture.previous = Object.values(data.bpi)[0]),
     )
-    .then(_ => (res ? res.status(status.OK).send(capture) : null))
+    .then(
+      _ =>
+        res
+          ? res.status(status.OK).send({
+              diff:
+                Math.round((capture.current - capture.previous) * 100) / 100,
+              current: capture.current,
+              previous: capture.previous,
+            })
+          : null,
+    )
     .catch(err => res.status(status.USER_ERROR).send(err));
 };
 
@@ -36,18 +46,18 @@ server.get('/compare', (req, res) => {
   });
 });
 
-server.get('/c', (req, res) => {
-  fetch(currentPriceURL)
-    .then(response => response.json())
-    .then(data => res.status(200).send(data))
-    .catch(err => res.status(422).send(err));
-});
+// server.get('/c', (req, res) => {
+//   fetch(currentPriceURL)
+//     .then(response => response.json())
+//     .then(data => res.status(200).send(data))
+//     .catch(err => res.status(422).send(err));
+// });
 
-server.get('/c1', (req, res) => {
-  fetch(yesterdayPriceURL)
-    .then(response => response.json())
-    .then(data => res.status(200).send(data))
-    .catch(err => res.status(422).send(err));
-});
+// server.get('/c1', (req, res) => {
+//   fetch(yesterdayPriceURL)
+//     .then(response => response.json())
+//     .then(data => res.status(200).send(data))
+//     .catch(err => res.status(422).send(err));
+// });
 
 server.listen(port);
