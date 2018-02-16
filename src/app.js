@@ -13,6 +13,7 @@ const yesterdayPriceURL = config.coindesk.URL.previousDayPrice;
 const server = express();
 server.use(bodyParser.json());
 
+const history = [];
 const capture = {};
 
 const fetchCurrentPrice = new Promise((resolve, reject) => {
@@ -35,13 +36,15 @@ server.get('/compare', (req, res) => {
   Promise.all([fetchYesterdayPrice, fetchCurrentPrice]).then(_ => {
     const diff =
       capture.current > capture.previous ? 'has risen by' : 'has fallen by';
-    res
-      .status(status.OK)
-      .send(
-        `BPI ${diff} $${Math.abs(
-          Math.round((capture.current - capture.previous) * 100),
-        ) / 100} USD since yesterday.`,
-      );
+    const message = `BPI ${diff} $${Math.abs(
+      Math.round((capture.current - capture.previous) * 100),
+    ) / 100} USD since yesterday.`;
+    history.push(message);
+    res.status(status.OK).send(
+      history.map(item => {
+        return item;
+      }),
+    );
   });
 });
 
