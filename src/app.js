@@ -36,16 +36,23 @@ server.get('/compare', (req, res) => {
   Promise.all([fetchYesterdayPrice, fetchCurrentPrice]).then(_ => {
     const diff =
       capture.current > capture.previous ? 'has risen by' : 'has fallen by';
+
     const message = `BPI ${diff} $${Math.abs(
       Math.round((capture.current - capture.previous) * 100),
     ) / 100} USD since yesterday.`;
+
     history.push(message);
-    res.status(status.OK).send(
-      history.map(item => {
-        return item;
-      }),
-    );
+
+    res.status(status.OK).send(message);
   });
+});
+
+server.get('/history', (req, res) => {
+  res.status(status.OK).send(
+    history.map(elem => {
+      return elem;
+    }),
+  );
 });
 
 server.listen(port);
